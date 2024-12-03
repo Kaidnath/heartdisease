@@ -2,6 +2,7 @@ import streamlit as st
 import pickle
 import pandas as pd
 import os
+model_path = "heartdisease1.pkl"  
 
 # Page configuration
 st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
@@ -15,11 +16,13 @@ else:
 
 # Load model
 try:
-    with open('heartdisease1.pkl', 'rb') as file:
+    with open(model_path, 'rb') as file:
         model = pickle.load(file)
+    print("Model loaded successfully!")
+except FileNotFoundError:
+    print(f"Error: The model file '{model_path}' was not found at {model_path}")
 except Exception as e:
-    st.error(f"Error loading model: {str(e)}")
-    st.stop()
+    print(f"An error occurred: {e}")
 
 def predict_heart_disease(age, sex, cp, trestbps, chol, fbs, restecg, 
                          thalach, exang, oldpeak, slope, ca, thal):
