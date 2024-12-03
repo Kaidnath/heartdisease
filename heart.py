@@ -2,7 +2,6 @@ import streamlit as st
 import pickle
 import pandas as pd
 import os
-model_path = "heartdisease1.pkl"  
 
 # Page configuration
 st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
@@ -14,24 +13,13 @@ if os.path.exists("image11.png"):
 else:
     st.title("Heart Disease Prediction App")
 
-# Initialize model variable to None
-model = None
-
 # Load model
 try:
-    with open(model_path, 'rb') as file:
+    with open('/heartdisease1.pkl', 'rb') as file:
         model = pickle.load(file)
-    st.success("Model loaded successfully!")
-except FileNotFoundError:
-    st.error(f"Error: The model file '{model_path}' was not found.")
 except Exception as e:
-    st.error(f"An error occurred: {e}")
-
-# Check if the model is loaded before proceeding
-if model is None:
-    st.warning("Model could not be loaded. Please check the error messages above.")
-else:
-    st.success("Model is ready to use.")
+    st.error(f"Error loading model: {str(e)}")
+    st.stop()
 
 def predict_heart_disease(age, sex, cp, trestbps, chol, fbs, restecg, 
                          thalach, exang, oldpeak, slope, ca, thal):
