@@ -20,7 +20,7 @@ try:
         model = pickle.load(file)
     print("Model loaded successfully!")
 except FileNotFoundError:
-    print(f"Error: The model file '{model_filename}' was not found at {model_path}")
+    print(f"Error: The model file '{model_path}' was not found at {model_path}")
 except Exception as e:
     print(f"An error occurred: {e}")
 
