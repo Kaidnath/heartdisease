@@ -14,15 +14,24 @@ if os.path.exists("image11.png"):
 else:
     st.title("Heart Disease Prediction App")
 
+# Initialize model variable to None
+model = None
+
 # Load model
 try:
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
-    print("Model loaded successfully!")
+    st.success("Model loaded successfully!")
 except FileNotFoundError:
-    print(f"Error: The model file '{model_path}' was not found at {model_path}")
+    st.error(f"Error: The model file '{model_path}' was not found.")
 except Exception as e:
-    print(f"An error occurred: {e}")
+    st.error(f"An error occurred: {e}")
+
+# Check if the model is loaded before proceeding
+if model is None:
+    st.warning("Model could not be loaded. Please check the error messages above.")
+else:
+    st.success("Model is ready to use.")
 
 def predict_heart_disease(age, sex, cp, trestbps, chol, fbs, restecg, 
                          thalach, exang, oldpeak, slope, ca, thal):
