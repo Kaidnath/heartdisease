@@ -15,7 +15,7 @@ else:
 
 # Load model
 try:
-    with open('/Users/zoom/Desktop/HeartDisease/heartdisease.pkl', 'rb') as file:
+    with open('/Users/zoom/Desktop/HeartDisease/heartdisease1.pkl', 'rb') as file:
         model = pickle.load(file)
 except Exception as e:
     st.error(f"Error loading model: {str(e)}")
