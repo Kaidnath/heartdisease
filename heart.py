@@ -3,34 +3,32 @@ import pickle
 import pandas as pd
 import os
 
-# Initialize session state for model
-if 'model' not in st.session_state:
-    st.session_state.model = None
+# Global variable for model path
+MODEL_PATH = "heartdisease1.pkl"
 
-def load_model(model_path="heartdisease1.pkl"):
-    """Load the prediction model from pickle file."""
+@st.cache_resource
+def load_model():
+    """Load the prediction model and cache it."""
     try:
-        with open(model_path, 'rb') as file:
-            model = pickle.load(file)
-        st.session_state.model = model
-        return True
+        with open(MODEL_PATH, 'rb') as file:
+            return pickle.load(file)
     except FileNotFoundError:
-        st.error(f"Error: The model file '{model_path}' was not found.")
-        return False
+        st.error(f"Error: The model file '{MODEL_PATH}' was not found.")
+        return None
     except Exception as e:
         st.error(f"An error occurred while loading the model: {e}")
-        return False
+        return None
 
-def predict_heart_disease(age, sex, cp, trestbps, chol, fbs, restecg, 
+def predict_heart_disease(model, age, sex, cp, trestbps, chol, fbs, restecg, 
                          thalach, exang, oldpeak, slope, ca, thal):
     """Make prediction using the loaded model."""
-    if st.session_state.model is None:
+    if model is None:
         st.error("Model not loaded. Please ensure the model file exists and is valid.")
         return None
     
     try:
-        prediction = st.session_state.model.predict([[age, sex, cp, trestbps, chol, fbs, restecg,
-                                                    thalach, exang, oldpeak, slope, ca, thal]])
+        prediction = model.predict([[age, sex, cp, trestbps, chol, fbs, restecg,
+                                   thalach, exang, oldpeak, slope, ca, thal]])
         return prediction[0]
     except Exception as e:
         st.error(f"Prediction error: {str(e)}")
@@ -46,10 +44,10 @@ def main():
         st.image("image11.png", width=600)
     
     # Load model at startup
-    if st.session_state.model is None:
-        if not load_model():
-            st.warning("Please ensure the model file 'heartdisease1.pkl' is in the same directory as this script.")
-            return
+    model = load_model()
+    if model is None:
+        st.warning("Please ensure the model file 'heartdisease1.pkl' is in the same directory as this script.")
+        return
     
     st.write("Enter patient information to predict heart disease risk")
     
@@ -88,7 +86,7 @@ def main():
     thal = int(thal[0])
     
     if st.button("Predict"):
-        result = predict_heart_disease(age, sex, cp, trestbps, chol, fbs, 
+        result = predict_heart_disease(model, age, sex, cp, trestbps, chol, fbs, 
                                      restecg, thalach, exang, oldpeak, 
                                      slope, ca, thal)
         if result is not None:
