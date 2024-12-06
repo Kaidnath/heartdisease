@@ -2,41 +2,58 @@ import streamlit as st
 import pickle
 import pandas as pd
 import os
-model_path = "heartdisease1.pkl"  
 
-# Page configuration
-st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
+# Initialize session state for model
+if 'model' not in st.session_state:
+    st.session_state.model = None
 
-# Check for image and display
-if os.path.exists("image11.png"):
-    st.title("Heart Disease Prediction App")
-    st.image("image11.png", width=600)
-else:
-    st.title("Heart Disease Prediction App")
-
-# Load model
-try:
-    with open(model_path, 'rb') as file:
-        model = pickle.load(file)
-    print("Model loaded successfully!")
-except FileNotFoundError:
-    print(f"Error: The model file '{model_path}' was not found at {model_path}")
-except Exception as e:
-    print(f"An error occurred: {e}")
+def load_model(model_path="heartdisease1.pkl"):
+    """Load the prediction model from pickle file."""
+    try:
+        with open(model_path, 'rb') as file:
+            model = pickle.load(file)
+        st.session_state.model = model
+        return True
+    except FileNotFoundError:
+        st.error(f"Error: The model file '{model_path}' was not found.")
+        return False
+    except Exception as e:
+        st.error(f"An error occurred while loading the model: {e}")
+        return False
 
 def predict_heart_disease(age, sex, cp, trestbps, chol, fbs, restecg, 
                          thalach, exang, oldpeak, slope, ca, thal):
+    """Make prediction using the loaded model."""
+    if st.session_state.model is None:
+        st.error("Model not loaded. Please ensure the model file exists and is valid.")
+        return None
+    
     try:
-        prediction = model.predict([[age, sex, cp, trestbps, chol, fbs, restecg,
-                                   thalach, exang, oldpeak, slope, ca, thal]])
+        prediction = st.session_state.model.predict([[age, sex, cp, trestbps, chol, fbs, restecg,
+                                                    thalach, exang, oldpeak, slope, ca, thal]])
         return prediction[0]
     except Exception as e:
         st.error(f"Prediction error: {str(e)}")
         return None
 
 def main():
+    # Page configuration
+    st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
+    
+    # Title and image
+    st.title("Heart Disease Prediction App")
+    if os.path.exists("image11.png"):
+        st.image("image11.png", width=600)
+    
+    # Load model at startup
+    if st.session_state.model is None:
+        if not load_model():
+            st.warning("Please ensure the model file 'heartdisease1.pkl' is in the same directory as this script.")
+            return
+    
     st.write("Enter patient information to predict heart disease risk")
     
+    # Create two columns for input fields
     col1, col2 = st.columns(2)
     
     with col1:
@@ -59,7 +76,7 @@ def main():
         slope = st.selectbox("ST Segment Slope", ["1 (Up)", "2 (Flat)", "3 (Down)"])
         ca = st.selectbox("Number of Major Vessels", ["0", "1", "2", "3"])
         thal = st.selectbox("Thalassemia", ["1", "2", "3"])
-
+    
     # Process inputs
     sex = int(sex[0])
     cp = int(cp[0])
@@ -69,7 +86,7 @@ def main():
     slope = int(slope[0])
     ca = int(ca[0])
     thal = int(thal[0])
-
+    
     if st.button("Predict"):
         result = predict_heart_disease(age, sex, cp, trestbps, chol, fbs, 
                                      restecg, thalach, exang, oldpeak, 
@@ -81,7 +98,7 @@ def main():
             else:
                 st.success("Low Risk of Heart Disease")
                 st.write("Maintain a healthy lifestyle and regular check-ups.")
-
+                
         # Display input summary
         st.subheader("Input Summary")
         data = {
