@@ -3,28 +3,6 @@ import pickle
 import pandas as pd
 import os
 
-<<<<<<< HEAD
-# Page configuration
-st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
-
-# Check for image and display
-if os.path.exists("image11.png"):
-    st.title("Heart Disease Prediction App")
-    st.image("image11.png", width=600)
-else:
-    st.title("Heart Disease Prediction App")
-
-# Load model
-try:
-    with open('/Users/zoom/Desktop/HeartDisease/heartdisease.pkl', 'rb') as file:
-        model = pickle.load(file)
-except Exception as e:
-    st.error(f"Error loading model: {str(e)}")
-    st.stop()
-
-def predict_heart_disease(age, sex, cp, trestbps, chol, fbs, restecg, 
-                         thalach, exang, oldpeak, slope, ca, thal):
-=======
 # Global variable for model path
 MODEL_PATH = "heartdisease1.pkl"
 
@@ -48,7 +26,6 @@ def predict_heart_disease(model, age, sex, cp, trestbps, chol, fbs, restecg,
         st.error("Model not loaded. Please ensure the model file exists and is valid.")
         return None
     
->>>>>>> 5ab09b7af41f214a06d6ffaa954eb64fbb32151a
     try:
         prediction = model.predict([[age, sex, cp, trestbps, chol, fbs, restecg,
                                    thalach, exang, oldpeak, slope, ca, thal]])
@@ -58,10 +35,6 @@ def predict_heart_disease(model, age, sex, cp, trestbps, chol, fbs, restecg,
         return None
 
 def main():
-<<<<<<< HEAD
-    st.write("Enter patient information to predict heart disease risk")
-    
-=======
     # Page configuration
     st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
     
@@ -79,7 +52,6 @@ def main():
     st.write("Enter patient information to predict heart disease risk")
     
     # Create two columns for input fields
->>>>>>> 5ab09b7af41f214a06d6ffaa954eb64fbb32151a
     col1, col2 = st.columns(2)
     
     with col1:
@@ -102,11 +74,7 @@ def main():
         slope = st.selectbox("ST Segment Slope", ["1 (Up)", "2 (Flat)", "3 (Down)"])
         ca = st.selectbox("Number of Major Vessels", ["0", "1", "2", "3"])
         thal = st.selectbox("Thalassemia", ["1", "2", "3"])
-<<<<<<< HEAD
-
-=======
     
->>>>>>> 5ab09b7af41f214a06d6ffaa954eb64fbb32151a
     # Process inputs
     sex = int(sex[0])
     cp = int(cp[0])
@@ -116,15 +84,9 @@ def main():
     slope = int(slope[0])
     ca = int(ca[0])
     thal = int(thal[0])
-<<<<<<< HEAD
-
-    if st.button("Predict"):
-        result = predict_heart_disease(age, sex, cp, trestbps, chol, fbs, 
-=======
     
     if st.button("Predict"):
         result = predict_heart_disease(model, age, sex, cp, trestbps, chol, fbs, 
->>>>>>> 5ab09b7af41f214a06d6ffaa954eb64fbb32151a
                                      restecg, thalach, exang, oldpeak, 
                                      slope, ca, thal)
         if result is not None:
@@ -134,11 +96,7 @@ def main():
             else:
                 st.success("Low Risk of Heart Disease")
                 st.write("Maintain a healthy lifestyle and regular check-ups.")
-<<<<<<< HEAD
-
-=======
                 
->>>>>>> 5ab09b7af41f214a06d6ffaa954eb64fbb32151a
         # Display input summary
         st.subheader("Input Summary")
         data = {
@@ -152,8 +110,4 @@ def main():
         st.table(pd.DataFrame(data))
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     main()
-=======
-    main()
->>>>>>> 5ab09b7af41f214a06d6ffaa954eb64fbb32151a
