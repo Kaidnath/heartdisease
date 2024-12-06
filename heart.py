@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 # Global variable for model path
-MODEL_PATH = "heartdisease1.pkl"
+MODEL_PATH = "heartdisease.pkl"
 
 @st.cache_resource
 def load_model():
